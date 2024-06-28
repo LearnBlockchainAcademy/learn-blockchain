@@ -4,6 +4,307 @@
  */
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  31337: {
+    GnosisEnergy: {
+      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_initialEnergyPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "_addr",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "EnergyPurchased",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "currAmount",
+              type: "uint256",
+            },
+          ],
+          name: "PriceUpdated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "withdrawal",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "energyPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "User",
+              type: "address",
+            },
+          ],
+          name: "getUserTotalPayment",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "allTimePurchase",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "makePayment",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_newPrice",
+              type: "uint256",
+            },
+          ],
+          name: "updateEnergyPrice",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address payable",
+              name: "recipient",
+              type: "address",
+            },
+          ],
+          name: "withdrawFunds",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {},
+    },
+    YourContract: {
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "greetingSetter",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "newGreeting",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "premium",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+          ],
+          name: "GreetingChange",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "greeting",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "premium",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_newGreeting",
+              type: "string",
+            },
+          ],
+          name: "setGreeting",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "totalCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "userGreetingCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {},
+    },
+  },
+} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;
