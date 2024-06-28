@@ -30,7 +30,7 @@ const BuyEnergy = () => {
     }
   }, [priceRate]);
   return (
-    <div className="flex justify-center m-auto">
+    <div className="flex justify-center gap-4 sm:flex-row flex-col m-auto">
       {/* User side */}
       <div className="card ">
         <h1 className="card-title">Buy Energy</h1>
@@ -79,6 +79,8 @@ const BuyEnergy = () => {
               functionName: "makePayment",
               value: parseEther(energyPrice.toString()),
             });
+            // @ts-ignore
+            document.getElementById("my_modal_1").showModal();
           }}
         >
           {" "}
@@ -88,7 +90,7 @@ const BuyEnergy = () => {
           Click here to view payment history
         </a>
       </div>
-      {admin === address && <div className="divider lg:divider-horizontal"></div>}
+      {admin === address && <div className="divider md:divider-horizontal"></div>}
       {/* Admin side */}
 
       {admin === address && (

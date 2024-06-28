@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
+//@ts-ignore
 import { CiFilter } from "react-icons/ci";
+//@ts-ignore
 import { CiReceipt } from "react-icons/ci";
 import { formatEther, formatUnits } from "viem";
 import { useAccount } from "wagmi";
