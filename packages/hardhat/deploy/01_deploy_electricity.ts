@@ -25,7 +25,7 @@ const deployGnosisEnergy: DeployFunction = async function (hre: HardhatRuntimeEn
   await deploy("GnosisEnergy", {
     from: deployer,
     // Contract constructor arguments
-    args: [ethers.parseEther("0.005"), deployer],
+    args: [ethers.parseEther("0.005"), "0xa88bc537277B2423686032a862FF8F8c67906168"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
