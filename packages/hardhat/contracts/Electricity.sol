@@ -68,7 +68,8 @@ contract GnosisEnergy {
 	function withdrawFunds(address payable recipient) public payable onlyOwner {
 		uint256 contractBalance = address(this).balance;
 		require(contractBalance > 0, "zero balance");
-		recipient.transfer(contractBalance);
+		(bool sent, ) = recipient.call{ value: contractBalance }("");
+		require(sent, "Failed to send funds");
 		emit withdrawal(contractBalance, recipient);
 	}
 }
