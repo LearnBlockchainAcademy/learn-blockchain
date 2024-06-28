@@ -25,6 +25,9 @@ module.exports = {
           success: "#34EEB6",
           warning: "#FFCF72",
           error: "#FF8863",
+          magneta: "#D941A9",
+          "base-blue": "#00247B",
+          "light-blue": "#2185f7",
 
           "--rounded-btn": "9999rem",
 
