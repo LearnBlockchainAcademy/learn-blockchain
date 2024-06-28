@@ -1,8 +1,49 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import { CiFilter } from "react-icons/ci";
 import { CiReceipt } from "react-icons/ci";
+import { formatEther, formatUnits } from "viem";
+import { useAccount } from "wagmi";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
+interface IHistory {
+  id: bigint;
+  amount: bigint;
+  value: bigint;
+  timestamp: bigint;
+}
 const History = () => {
+  const { address } = useAccount();
+  const [history, setHistory] = React.useState<IHistory[]>([]);
+  const { data } = useScaffoldReadContract({
+    contractName: "GnosisEnergy",
+    functionName: "getUserPaymentHistory",
+    args: [address],
+  });
+
+  useEffect(() => {
+    if (data) {
+      setHistory(data as IHistory[]);
+    }
+  }, [data]);
+
+  function HistoryCart({ amount, value, date }: { amount: string; value: string; date: string }) {
+    return (
+      <div className="p-4 border rounded-lg flex gap-4 shadow-md bg-[#2185f7] text-white mb-4 last:mb-0  justify-between ">
+        <div className="flex items-center gap-2">
+          <CiReceipt color="#fff" size={24} />
+          <span>
+            {value} of Units bought at {amount} eth.
+          </span>
+        </div>
+        <p>
+          {new Date(Number(date) * 1000).toLocaleDateString()} {new Date(Number(date) * 1000).toLocaleTimeString()}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-8">
       <h1 className="lg:text-4xl lg:bold">Transaction History</h1>
@@ -32,11 +73,22 @@ const History = () => {
               <CiFilter />
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-              <li>
-                <a>Time</a>
+              <li
+                onClick={() => {
+                  // Filter by date
+                  setHistory(
+                    history.sort((a, b) => Number(a.timestamp.toString() as any) - Number(b.timestamp.toString())),
+                  );
+                }}
+              >
+                <span>Time</span>
               </li>
-              <li>
-                <a>Amount</a>
+              <li
+                onClick={() =>
+                  setHistory(history.sort((a, b) => Number(a.value.toString()) - Number(b.value.toString())))
+                }
+              >
+                <span>Amount</span>
               </li>
             </ul>
           </div>
@@ -44,23 +96,21 @@ const History = () => {
 
         <div className=" bg-[#00247B] rounded-lg flex flex-col items-center p-2 shadow-lg">
           <h3 className="text-base text-white">Total Amount:</h3>
-          <span className="text-base text-white">X Amount</span>
+          <span className="text-base text-white">
+            {history?.reduce((acc: any, item: any) => acc + Number(formatEther(item.amount.toString())), 0)} ETH
+          </span>
         </div>
       </div>
-      <HistoryCart />
-      <HistoryCart />
-      <HistoryCart />
+      {history?.map((item: any) => (
+        <HistoryCart
+          key={item.id}
+          amount={formatUnits(item.amount, 19)}
+          value={formatUnits(item.value, 30)}
+          date={item.timestamp.toString()}
+        />
+      ))}
     </div>
   );
 };
-
-function HistoryCart() {
-  return (
-    <div className="p-4 border rounded-lg flex gap-4 shadow-md bg-[#2185f7] text-white mb-4 last:mb-0">
-      <CiReceipt color="#fff" size={24} />
-      <span>X amount of Units bought at Y price.</span>
-    </div>
-  );
-}
 
 export default History;

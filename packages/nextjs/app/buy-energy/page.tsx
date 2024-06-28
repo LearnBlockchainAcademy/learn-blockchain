@@ -1,61 +1,47 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { formatUnits, parseEther } from "viem";
+import { useAccount } from "wagmi";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const BuyEnergy = () => {
-  const [energyValue, setEnergyValue] = React.useState(0);
   const [energyPrice, setEnergyPrice] = React.useState(0);
-  const [energyRate, setEnergyRate] = React.useState(0);
-  const [fund, setFund] = React.useState(0);
-  const [token, setToken] = React.useState("");
-  //@ts-ignore
-  const admin = true;
-  const conversionRate = 0.0005;
+  const [conversionRate, setConversionRate] = React.useState(0);
+  const [newEnergyPriceRate, setNewEnergyPriceRate] = React.useState("");
+  const [energyValue, setEnergyValue] = React.useState(0);
+  const { address } = useAccount();
 
-  useEffect(() => {
-    // checks if the user is an admin and set admin respectively
+  const { data: admin } = useScaffoldReadContract({
+    contractName: "GnosisEnergy",
+    functionName: "owner",
   });
 
-  /**
-   * Set the price from the value of the energy
-   * @param energyVal The value of energy
-   */
-  const setPriceFromValue = (energyVal: number) => {
-    const price = energyVal * conversionRate;
-    setEnergyPrice(price);
-  };
+  const { data: priceRate } = useScaffoldReadContract({
+    contractName: "GnosisEnergy",
+    functionName: "energyPrice",
+  });
 
-  /**
-   * Set the emergy value from the input price
-   * @param price The price of energy
-   */
-  const setValueFromPrice = (price: number) => {
-    const energyVal = price / conversionRate;
-    setEnergyValue(energyVal);
-  };
-  const Withdraw = () => {
-    // make contract call
-  };
-  const UpdateRate = () => {
-    // make contract call
-  };
-  const Buy = () => {
-    // handle contract call
-    setToken("123456");
-    //@ts-ignore
-    document.getElementById("my_modal_1").showModal();
-  };
+  const { writeContractAsync } = useScaffoldWriteContract("GnosisEnergy");
+
+  useEffect(() => {
+    if (priceRate) {
+      setConversionRate(Number(formatUnits(priceRate, 18)));
+    }
+  }, [priceRate]);
   return (
     <div className="flex justify-center m-auto">
       {/* User side */}
       <div className="card ">
         <h1 className="card-title">Buy Energy</h1>
+
         <div>
           <label className="form-control w-full max-w-xs my-2">
             <div className="label">
               <span className="label-text">Energy Value</span>
-              <span className="label-text-alt">KWh</span>
+              <span className="label-text-alt">@{conversionRate} ETH per KWh</span>
             </div>
+
             <input
               type="number"
               placeholder="Type here"
@@ -63,7 +49,7 @@ const BuyEnergy = () => {
               value={energyValue}
               onChange={e => {
                 setEnergyValue(Number(e.target.value));
-                setPriceFromValue(Number(e.target.value));
+                setEnergyPrice(Number(e.target.value) * conversionRate);
               }}
             />
           </label>
@@ -81,14 +67,19 @@ const BuyEnergy = () => {
               className="input input-bordered rounded-lg border-[#d941a9] dark:bg-neutral dark:text-black w-full max-w-xs"
               onChange={e => {
                 setEnergyPrice(Number(e.target.value));
-                setValueFromPrice(Number(e.target.value));
+                setEnergyValue(Number(e.target.value) / conversionRate);
               }}
             />
           </label>
         </div>
         <button
           className="btn bg-[#00247b] rounded-lg text-white btn-ghost dark:bg-white dark:text-black btn-wide mt-2"
-          onClick={Buy}
+          onClick={() => {
+            writeContractAsync({
+              functionName: "makePayment",
+              value: parseEther(energyPrice.toString()),
+            });
+          }}
         >
           {" "}
           Buy{" "}
@@ -97,10 +88,10 @@ const BuyEnergy = () => {
           Click here to view payment history
         </a>
       </div>
-      {admin && <div className="divider lg:divider-horizontal"></div>}
+      {admin === address && <div className="divider lg:divider-horizontal"></div>}
       {/* Admin side */}
 
-      {admin && (
+      {admin === address && (
         <div className="card">
           <h3 className="card-title">Admin controls</h3>
           <div>
@@ -108,21 +99,24 @@ const BuyEnergy = () => {
               <label className="form-control w-full  max-w-xs">
                 <div className="label">
                   <span className="label-text">Change Energy Rate</span>
-                  <span className="label-text-alt">KWh</span>
+                  <span className="label-text-alt">ETH</span>
                 </div>
                 <input
                   type="number"
-                  placeholder="Type here"
-                  className="input input-bordered rounded-lg border-[#d941a9] dark:bg-neutral dark:text-black w-full max-w-xs"
-                  value={energyRate}
-                  onChange={e => {
-                    setEnergyRate(Number(e.target.value));
-                  }}
+                  placeholder="Hom many eth per kwh"
+                  className="input placeholder:text-sm input-bordered rounded-lg border-[#d941a9] dark:bg-neutral dark:text-black w-full max-w-xs"
+                  value={newEnergyPriceRate}
+                  onChange={e => setNewEnergyPriceRate(e.target.value)}
                 />
               </label>
               <button
                 className="btn bg-[#00247b] rounded-lg text-white btn-ghost dark:bg-white dark:text-black btn-wide mt-2"
-                onClick={UpdateRate}
+                onClick={async () =>
+                  await writeContractAsync({
+                    functionName: "updateEnergyPrice",
+                    args: [parseEther(newEnergyPriceRate)],
+                  })
+                }
               >
                 {" "}
                 Update{" "}
@@ -134,19 +128,15 @@ const BuyEnergy = () => {
                   <div className="label">
                     <span className="label-text">Withdraw fund</span>
                   </div>
-                  <input
-                    type="number"
-                    placeholder="Type here"
-                    className="input input-bordered rounded-lg border-[#d941a9] dark:bg-neutral dark:text-black w-full max-w-xs"
-                    value={fund}
-                    onChange={e => {
-                      setFund(Number(e.target.value));
-                    }}
-                  />
                 </label>
                 <button
                   className="btn bg-[#00247b] rounded-lg text-white btn-ghost dark:bg-white dark:text-black btn-wide mt-2"
-                  onClick={Withdraw}
+                  onClick={async () =>
+                    await writeContractAsync({
+                      functionName: "withdrawFunds",
+                      args: [address],
+                    })
+                  }
                 >
                   {" "}
                   Withdraw{" "}
@@ -161,7 +151,7 @@ const BuyEnergy = () => {
         <div className="modal-box">
           <h3 className="font-bold text-lg">Transaction successful!</h3>
           <p className="py-4">Here is your token</p>
-          <p className="py-4">{token}</p>
+          <p className="py-4">ETH</p>
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
