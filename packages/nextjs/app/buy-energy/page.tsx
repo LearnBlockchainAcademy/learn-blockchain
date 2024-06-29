@@ -10,6 +10,7 @@ const BuyEnergy = () => {
   const [conversionRate, setConversionRate] = React.useState(0);
   const [newEnergyPriceRate, setNewEnergyPriceRate] = React.useState("");
   const [energyValue, setEnergyValue] = React.useState(0);
+  const [token, setToken] = React.useState("");
   const { address } = useAccount();
 
   const { data: admin } = useScaffoldReadContract({
@@ -23,6 +24,11 @@ const BuyEnergy = () => {
   });
 
   const { writeContractAsync } = useScaffoldWriteContract("GnosisEnergy");
+  const generateToken = () => {
+    const min = 10 ** 15;
+    const max = 9 * 10 ** 15;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
 
   useEffect(() => {
     if (priceRate) {
@@ -79,6 +85,8 @@ const BuyEnergy = () => {
               functionName: "makePayment",
               value: parseEther(energyPrice.toString()),
             });
+            const val = String(generateToken());
+            setToken(val);
             // @ts-ignore
             document.getElementById("my_modal_1").showModal();
           }}
@@ -153,7 +161,7 @@ const BuyEnergy = () => {
         <div className="modal-box">
           <h3 className="font-bold text-lg">Transaction successful!</h3>
           <p className="py-4">Here is your token</p>
-          <p className="py-4">ETH</p>
+          <p className="py-4">{token}</p>
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
