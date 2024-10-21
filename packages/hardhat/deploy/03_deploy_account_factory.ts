@@ -1,18 +1,17 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { ethers } from "hardhat";
 
 /**
- * Deploys a contract named "GnosisEnergy" using the deployer account and
+ * Deploys a contract named "BuyMeACoffee" using the deployer account and
  * constructor arguments set to the deployer address
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deployGnosisEnergy: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployAccountFactory: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
-    When deploying to live networks (e.g `yarn deploy --network sepolia`), the deployer account
+    When deploying to live networks (e.g `yarn deploy --network goerli`), the deployer account
     should have sufficient balance to pay for the gas fees for contract creation.
 
     You can generate a random account with `yarn generate` which will fill DEPLOYER_PRIVATE_KEY
@@ -22,10 +21,9 @@ const deployGnosisEnergy: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("GnosisEnergy", {
+  await deploy("AccountFactory", {
     from: deployer,
     // Contract constructor arguments
-    args: [ethers.parseEther("0.005"), "0xa88bc537277B2423686032a862FF8F8c67906168"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -33,8 +31,8 @@ const deployGnosisEnergy: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 };
 
-export default deployGnosisEnergy;
+export default deployAccountFactory;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
-// e.g. yarn deploy --tags GnosisEnergy
-deployGnosisEnergy.tags = ["GnosisEnergy"];
+// e.g. yarn deploy --tags AccountFactory
+deployAccountFactory.tags = ["AccountFactory"];

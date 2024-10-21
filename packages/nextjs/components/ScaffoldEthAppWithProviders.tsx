@@ -10,11 +10,21 @@ import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { ProgressBar } from "~~/components/scaffold-eth/ProgressBar";
-import { useInitializeNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
+import { useInitializeNativeCurrencyPrice, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useGlobalState } from "~~/services/store/store";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   useInitializeNativeCurrencyPrice();
+  const { data: currentCohort } = useScaffoldReadContract({
+    contractName: "CohortForm",
+    functionName: "currentCohort",
+  });
+  const setCurrentCohort = useGlobalState(({ setCurrentCohort }) => setCurrentCohort);
+  useEffect(() => {
+    currentCohort && setCurrentCohort(currentCohort);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentCohort]);
 
   return (
     <>

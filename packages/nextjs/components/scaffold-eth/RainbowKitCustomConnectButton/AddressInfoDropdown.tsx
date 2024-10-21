@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { NetworkOptions } from "./NetworkOptions";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { getAddress } from "viem";
@@ -11,6 +12,7 @@ import {
   CheckCircleIcon,
   ChevronDownIcon,
   DocumentDuplicateIcon,
+  LinkIcon,
   QrCodeIcon,
 } from "@heroicons/react/24/outline";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-eth";
@@ -88,6 +90,11 @@ export const AddressInfoDropdown = ({
                 </div>
               </CopyToClipboard>
             )}
+          </li>
+          <li className={"" + selectingNetwork ? "hidden" : ""}>
+            <Link href={"/profile"}>
+              <span className="whitespace-nowrap">View Profile</span> <LinkIcon />
+            </Link>
           </li>
           <li className={selectingNetwork ? "hidden" : ""}>
             <label htmlFor="qrcode-modal" className="btn-sm !rounded-xl flex gap-3 py-3">

@@ -5,20 +5,40 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
-    GnosisEnergy: {
-      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+  421614: {
+    AccountFactory: {
+      address: "0x171F74882741B78b9537Ce75a2A9393f6112f96b",
       abi: [
         {
           inputs: [
             {
-              internalType: "uint256",
-              name: "_initialEnergyPrice",
-              type: "uint256",
+              internalType: "address",
+              name: "owner",
+              type: "address",
             },
+          ],
+          name: "createAccount",
+          outputs: [
             {
               internalType: "address",
-              name: "_addr",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+    },
+    CohortForm: {
+      address: "0x9690b5946d5560220727f0eA9787d81402CafDc0",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_superAdmin",
               type: "address",
             },
           ],
@@ -26,22 +46,123 @@ const deployedContracts = {
           type: "constructor",
         },
         {
+          inputs: [],
+          name: "AccessControlBadConfirmation",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              internalType: "bytes32",
+              name: "neededRole",
+              type: "bytes32",
+            },
+          ],
+          name: "AccessControlUnauthorizedAccount",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          name: "NotAllowed",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+          ],
+          name: "CohortCreated",
+          type: "event",
+        },
+        {
           anonymous: false,
           inputs: [
             {
               indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "previousAdminRole",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "newAdminRole",
+              type: "bytes32",
+            },
+          ],
+          name: "RoleAdminChanged",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
               internalType: "address",
-              name: "user",
+              name: "account",
               type: "address",
             },
             {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
             },
           ],
-          name: "EnergyPurchased",
+          name: "RoleGranted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "RoleRevoked",
           type: "event",
         },
         {
@@ -49,41 +170,54 @@ const deployedContracts = {
           inputs: [
             {
               indexed: false,
-              internalType: "uint256",
-              name: "currAmount",
-              type: "uint256",
+              internalType: "string",
+              name: "name",
+              type: "string",
             },
-          ],
-          name: "PriceUpdated",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
             {
               indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: true,
-              internalType: "address",
-              name: "owner",
-              type: "address",
+              internalType: "string",
+              name: "cohort",
+              type: "string",
             },
           ],
-          name: "withdrawal",
+          name: "StudentRegistered",
           type: "event",
         },
         {
           inputs: [],
-          name: "energyPrice",
+          name: "ADMIN_ROLE",
           outputs: [
             {
-              internalType: "uint256",
+              internalType: "bytes32",
               name: "",
-              type: "uint256",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "DEFAULT_ADMIN_ROLE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "STUDENT_ROLE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
             },
           ],
           stateMutability: "view",
@@ -92,37 +226,148 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "_user",
-              type: "address",
+              internalType: "string",
+              name: "cohort",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "email",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "blockchainExperience",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "github",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "linkedin",
+              type: "string",
             },
           ],
-          name: "getUserPaymentHistory",
+          name: "addDetails",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "number",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "numberOfMembers",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "whatsappLink",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "githubLink",
+              type: "string",
+            },
+          ],
+          name: "createCohort",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "cohort",
+              type: "string",
+            },
+            {
+              internalType: "bytes",
+              name: "_curriculum",
+              type: "bytes",
+            },
+          ],
+          name: "createCurriculumn",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "currentCohort",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getAllStudents",
           outputs: [
             {
               components: [
                 {
-                  internalType: "uint256",
-                  name: "id",
-                  type: "uint256",
+                  internalType: "address",
+                  name: "student",
+                  type: "address",
                 },
                 {
-                  internalType: "uint256",
-                  name: "amount",
-                  type: "uint256",
+                  internalType: "string",
+                  name: "cohort",
+                  type: "string",
                 },
                 {
-                  internalType: "uint256",
-                  name: "value",
-                  type: "uint256",
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
                 },
                 {
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
+                  internalType: "string",
+                  name: "email",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "blockchainExperience",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "github",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "linkedin",
+                  type: "string",
                 },
               ],
-              internalType: "struct GnosisEnergy.Payment[]",
+              internalType: "struct CohortForm.Form[]",
               name: "",
               type: "tuple[]",
             },
@@ -131,10 +376,217 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "string",
+              name: "id",
+              type: "string",
+            },
+          ],
+          name: "getCohort",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "cohortNumber",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "numberOfMembers",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "whatsappLink",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "githubLink",
+                  type: "string",
+                },
+              ],
+              internalType: "struct CohortForm.Cohort",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "cohort",
+              type: "string",
+            },
+          ],
+          name: "getCurriculumn",
+          outputs: [
+            {
+              internalType: "bytes",
+              name: "",
+              type: "bytes",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [],
-          name: "makePayment",
+          name: "getRegisteredCohorts",
+          outputs: [
+            {
+              internalType: "string[]",
+              name: "",
+              type: "string[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+          ],
+          name: "getRoleAdmin",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_address",
+              type: "address",
+            },
+          ],
+          name: "getStudentDetail",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "student",
+                  type: "address",
+                },
+                {
+                  internalType: "string",
+                  name: "cohort",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "email",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "blockchainExperience",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "github",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "linkedin",
+                  type: "string",
+                },
+              ],
+              internalType: "struct CohortForm.Form",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "cohort",
+              type: "string",
+            },
+          ],
+          name: "getStudentsByCohort",
+          outputs: [
+            {
+              internalType: "address[]",
+              name: "",
+              type: "address[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "grantRole",
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "hasRole",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {
@@ -151,8 +603,621 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_address",
+              type: "address",
+            },
+          ],
+          name: "registerAdmin",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "registeredCohorts",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "callerConfirmation",
+              type: "address",
+            },
+          ],
+          name: "renounceRole",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "role",
+              type: "bytes32",
+            },
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "revokeRole",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_cohort",
+              type: "string",
+            },
+          ],
+          name: "setCurrentCohort",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
-          name: "totalEnergyCount",
+          name: "superAdmin",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes4",
+              name: "interfaceId",
+              type: "bytes4",
+            },
+          ],
+          name: "supportsInterface",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "sender",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "nonce",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes",
+                  name: "initCode",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "callData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "accountGasLimits",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint256",
+                  name: "preVerificationGas",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "gasFees",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "bytes",
+                  name: "paymasterAndData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct PackedUserOperation",
+              name: "",
+              type: "tuple",
+            },
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "validateUserOp",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "validationData",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        DEFAULT_ADMIN_ROLE: "@openzeppelin/contracts/access/AccessControl.sol",
+        getRoleAdmin: "@openzeppelin/contracts/access/AccessControl.sol",
+        grantRole: "@openzeppelin/contracts/access/AccessControl.sol",
+        hasRole: "@openzeppelin/contracts/access/AccessControl.sol",
+        renounceRole: "@openzeppelin/contracts/access/AccessControl.sol",
+        revokeRole: "@openzeppelin/contracts/access/AccessControl.sol",
+        supportsInterface: "@openzeppelin/contracts/access/AccessControl.sol",
+        validateUserOp: "@account-abstraction/contracts/interfaces/IAccount.sol",
+      },
+    },
+    EntryPoint: {
+      address: "0x44AA4dDAe48fd79671dc49f00A985f4e126582C3",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "bool",
+              name: "success",
+              type: "bool",
+            },
+            {
+              internalType: "bytes",
+              name: "ret",
+              type: "bytes",
+            },
+          ],
+          name: "DelegateAndRevert",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "opIndex",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          name: "FailedOp",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "opIndex",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+            {
+              internalType: "bytes",
+              name: "inner",
+              type: "bytes",
+            },
+          ],
+          name: "FailedOpWithRevert",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes",
+              name: "returnData",
+              type: "bytes",
+            },
+          ],
+          name: "PostOpReverted",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ReentrancyGuardReentrantCall",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "SenderAddressResult",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "aggregator",
+              type: "address",
+            },
+          ],
+          name: "SignatureValidationFailed",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "userOpHash",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "factory",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "paymaster",
+              type: "address",
+            },
+          ],
+          name: "AccountDeployed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [],
+          name: "BeforeExecution",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "totalDeposit",
+              type: "uint256",
+            },
+          ],
+          name: "Deposited",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "userOpHash",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "nonce",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "revertReason",
+              type: "bytes",
+            },
+          ],
+          name: "PostOpRevertReason",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "aggregator",
+              type: "address",
+            },
+          ],
+          name: "SignatureAggregatorChanged",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "totalStaked",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "unstakeDelaySec",
+              type: "uint256",
+            },
+          ],
+          name: "StakeLocked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "withdrawTime",
+              type: "uint256",
+            },
+          ],
+          name: "StakeUnlocked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "withdrawAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "StakeWithdrawn",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "userOpHash",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "paymaster",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "nonce",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "success",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "actualGasCost",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "actualGasUsed",
+              type: "uint256",
+            },
+          ],
+          name: "UserOperationEvent",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "userOpHash",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "nonce",
+              type: "uint256",
+            },
+          ],
+          name: "UserOperationPrefundTooLow",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "userOpHash",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "nonce",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "revertReason",
+              type: "bytes",
+            },
+          ],
+          name: "UserOperationRevertReason",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "withdrawAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "Withdrawn",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint32",
+              name: "unstakeDelaySec",
+              type: "uint32",
+            },
+          ],
+          name: "addStake",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "balanceOf",
           outputs: [
             {
               internalType: "uint256",
@@ -166,12 +1231,536 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "address",
+              name: "target",
+              type: "address",
+            },
+            {
+              internalType: "bytes",
+              name: "data",
+              type: "bytes",
+            },
+          ],
+          name: "delegateAndRevert",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "depositTo",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "deposits",
+          outputs: [
+            {
               internalType: "uint256",
-              name: "_newPrice",
+              name: "deposit",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "staked",
+              type: "bool",
+            },
+            {
+              internalType: "uint112",
+              name: "stake",
+              type: "uint112",
+            },
+            {
+              internalType: "uint32",
+              name: "unstakeDelaySec",
+              type: "uint32",
+            },
+            {
+              internalType: "uint48",
+              name: "withdrawTime",
+              type: "uint48",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "getDepositInfo",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "deposit",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "staked",
+                  type: "bool",
+                },
+                {
+                  internalType: "uint112",
+                  name: "stake",
+                  type: "uint112",
+                },
+                {
+                  internalType: "uint32",
+                  name: "unstakeDelaySec",
+                  type: "uint32",
+                },
+                {
+                  internalType: "uint48",
+                  name: "withdrawTime",
+                  type: "uint48",
+                },
+              ],
+              internalType: "struct IStakeManager.DepositInfo",
+              name: "info",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              internalType: "uint192",
+              name: "key",
+              type: "uint192",
+            },
+          ],
+          name: "getNonce",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "nonce",
               type: "uint256",
             },
           ],
-          name: "updateEnergyPrice",
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes",
+              name: "initCode",
+              type: "bytes",
+            },
+          ],
+          name: "getSenderAddress",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "sender",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "nonce",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes",
+                  name: "initCode",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "callData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "accountGasLimits",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint256",
+                  name: "preVerificationGas",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "gasFees",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "bytes",
+                  name: "paymasterAndData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct PackedUserOperation",
+              name: "userOp",
+              type: "tuple",
+            },
+          ],
+          name: "getUserOpHash",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  components: [
+                    {
+                      internalType: "address",
+                      name: "sender",
+                      type: "address",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "nonce",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "bytes",
+                      name: "initCode",
+                      type: "bytes",
+                    },
+                    {
+                      internalType: "bytes",
+                      name: "callData",
+                      type: "bytes",
+                    },
+                    {
+                      internalType: "bytes32",
+                      name: "accountGasLimits",
+                      type: "bytes32",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "preVerificationGas",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "bytes32",
+                      name: "gasFees",
+                      type: "bytes32",
+                    },
+                    {
+                      internalType: "bytes",
+                      name: "paymasterAndData",
+                      type: "bytes",
+                    },
+                    {
+                      internalType: "bytes",
+                      name: "signature",
+                      type: "bytes",
+                    },
+                  ],
+                  internalType: "struct PackedUserOperation[]",
+                  name: "userOps",
+                  type: "tuple[]",
+                },
+                {
+                  internalType: "contract IAggregator",
+                  name: "aggregator",
+                  type: "address",
+                },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct IEntryPoint.UserOpsPerAggregator[]",
+              name: "opsPerAggregator",
+              type: "tuple[]",
+            },
+            {
+              internalType: "address payable",
+              name: "beneficiary",
+              type: "address",
+            },
+          ],
+          name: "handleAggregatedOps",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "sender",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "nonce",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes",
+                  name: "initCode",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "callData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "accountGasLimits",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint256",
+                  name: "preVerificationGas",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "gasFees",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "bytes",
+                  name: "paymasterAndData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct PackedUserOperation[]",
+              name: "ops",
+              type: "tuple[]",
+            },
+            {
+              internalType: "address payable",
+              name: "beneficiary",
+              type: "address",
+            },
+          ],
+          name: "handleOps",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint192",
+              name: "key",
+              type: "uint192",
+            },
+          ],
+          name: "incrementNonce",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes",
+              name: "callData",
+              type: "bytes",
+            },
+            {
+              components: [
+                {
+                  components: [
+                    {
+                      internalType: "address",
+                      name: "sender",
+                      type: "address",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "nonce",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "verificationGasLimit",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "callGasLimit",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "paymasterVerificationGasLimit",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "paymasterPostOpGasLimit",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "preVerificationGas",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "address",
+                      name: "paymaster",
+                      type: "address",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "maxFeePerGas",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "maxPriorityFeePerGas",
+                      type: "uint256",
+                    },
+                  ],
+                  internalType: "struct EntryPoint.MemoryUserOp",
+                  name: "mUserOp",
+                  type: "tuple",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "userOpHash",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint256",
+                  name: "prefund",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "contextOffset",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "preOpGas",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct EntryPoint.UserOpInfo",
+              name: "opInfo",
+              type: "tuple",
+            },
+            {
+              internalType: "bytes",
+              name: "context",
+              type: "bytes",
+            },
+          ],
+          name: "innerHandleOp",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "actualGasCost",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "uint192",
+              name: "",
+              type: "uint192",
+            },
+          ],
+          name: "nonceSequenceNumber",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes4",
+              name: "interfaceId",
+              type: "bytes4",
+            },
+          ],
+          name: "supportsInterface",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "unlockStake",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -180,13 +1769,31 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address payable",
-              name: "recipient",
+              name: "withdrawAddress",
               type: "address",
             },
           ],
-          name: "withdrawFunds",
+          name: "withdrawStake",
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address payable",
+              name: "withdrawAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "withdrawAmount",
+              type: "uint256",
+            },
+          ],
+          name: "withdrawTo",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -194,147 +1801,137 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      inheritedFunctions: {},
+      inheritedFunctions: {
+        addStake: "@account-abstraction/contracts/core/StakeManager.sol",
+        balanceOf: "@account-abstraction/contracts/core/StakeManager.sol",
+        delegateAndRevert: "@account-abstraction/contracts/interfaces/IEntryPoint.sol",
+        depositTo: "@account-abstraction/contracts/core/StakeManager.sol",
+        getDepositInfo: "@account-abstraction/contracts/core/StakeManager.sol",
+        getNonce: "@account-abstraction/contracts/core/NonceManager.sol",
+        getSenderAddress: "@account-abstraction/contracts/interfaces/IEntryPoint.sol",
+        getUserOpHash: "@account-abstraction/contracts/interfaces/IEntryPoint.sol",
+        handleAggregatedOps: "@account-abstraction/contracts/interfaces/IEntryPoint.sol",
+        handleOps: "@account-abstraction/contracts/interfaces/IEntryPoint.sol",
+        incrementNonce: "@account-abstraction/contracts/core/NonceManager.sol",
+        unlockStake: "@account-abstraction/contracts/core/StakeManager.sol",
+        withdrawStake: "@account-abstraction/contracts/core/StakeManager.sol",
+        withdrawTo: "@account-abstraction/contracts/core/StakeManager.sol",
+        deposits: "@account-abstraction/contracts/core/StakeManager.sol",
+        nonceSequenceNumber: "@account-abstraction/contracts/core/NonceManager.sol",
+        supportsInterface: "@openzeppelin/contracts/utils/introspection/ERC165.sol",
+      },
     },
-    YourContract: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    Paymaster: {
+      address: "0xc1a373dd12B50dA62B9878Eea017268CE3A8Ef28",
       abi: [
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
-            },
-          ],
+          inputs: [],
           stateMutability: "nonpayable",
           type: "constructor",
         },
         {
-          anonymous: false,
           inputs: [
             {
-              indexed: true,
-              internalType: "address",
-              name: "greetingSetter",
-              type: "address",
+              internalType: "enum Paymaster.PostOpMode",
+              name: "mode",
+              type: "uint8",
             },
             {
-              indexed: false,
-              internalType: "string",
-              name: "newGreeting",
-              type: "string",
+              internalType: "bytes",
+              name: "context",
+              type: "bytes",
             },
             {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
               internalType: "uint256",
-              name: "value",
+              name: "actualGasCost",
               type: "uint256",
             },
           ],
-          name: "GreetingChange",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "greeting",
-          outputs: [
-            {
-              internalType: "string",
-              name: "",
-              type: "string",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "_newGreeting",
-              type: "string",
-            },
-          ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
+          name: "postOp",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
         {
-          stateMutability: "payable",
-          type: "receive",
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "sender",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "nonce",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes",
+                  name: "initCode",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "callData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "accountGasLimits",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint256",
+                  name: "preVerificationGas",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "gasFees",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "bytes",
+                  name: "paymasterAndData",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct PackedUserOperation",
+              name: "",
+              type: "tuple",
+            },
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "validatePaymasterUserOp",
+          outputs: [
+            {
+              internalType: "bytes",
+              name: "context",
+              type: "bytes",
+            },
+            {
+              internalType: "uint256",
+              name: "validationData",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
         },
       ],
       inheritedFunctions: {},

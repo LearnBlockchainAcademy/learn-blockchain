@@ -20,6 +20,8 @@ type GlobalState = {
   setIsNativeCurrencyFetching: (newIsNativeCurrencyFetching: boolean) => void;
   targetNetwork: ChainWithAttributes;
   setTargetNetwork: (newTargetNetwork: ChainWithAttributes) => void;
+  currentCohort: string;
+  setCurrentCohort: (cohort: string) => void;
 };
 
 export const useGlobalState = create<GlobalState>(set => ({
@@ -33,4 +35,6 @@ export const useGlobalState = create<GlobalState>(set => ({
     set(state => ({ nativeCurrency: { ...state.nativeCurrency, isFetching: newValue } })),
   targetNetwork: scaffoldConfig.targetNetworks[0],
   setTargetNetwork: (newTargetNetwork: ChainWithAttributes) => set(() => ({ targetNetwork: newTargetNetwork })),
+  setCurrentCohort: (cohort: string) => set(() => ({ currentCohort: cohort })),
+  currentCohort: "cohort 1",
 }));

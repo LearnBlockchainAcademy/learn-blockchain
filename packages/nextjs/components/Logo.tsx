@@ -1,4 +1,16 @@
-<svg width={103} height={103} viewBox="0 0 24 24" fill="none" {...props}>
+"use client";
+
+type Props = React.ComponentProps<"svg"> & {
+  size?: number;
+  color?: string;
+};
+
+/**
+ * Blockchain logo.
+ */
+export const Logo: React.FC<Props> = ({ size = 32, ...props }) => {
+  return (
+    <svg width={size} style={{ marginTop: "2px" }} height={size} viewBox="0 0 24 24" fill="none" {...props}>
       <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
       <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
       <g id="SVGRepo_iconCarrier">
@@ -19,3 +31,5 @@
         </clipPath>
       </defs>
     </svg>
+  );
+};
