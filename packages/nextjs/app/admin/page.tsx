@@ -93,7 +93,11 @@ export default function AdminPage() {
 
               {/* Select cohort */}
               <div>
-                <SelectCohort currentCohort={currentCohort as string} setCohortDetails={setCohortDetails} />
+                <SelectCohort
+                  setCurriculum={setCurriculum}
+                  currentCohort={currentCohort as string}
+                  setCohortDetails={setCohortDetails}
+                />
               </div>
               <CohortDetails details={cohortDetails as cohortDetails} />
             </div>
@@ -106,7 +110,11 @@ export default function AdminPage() {
               <StudentInput setStudentAddress={setStudentAddress} />
             </div>
             <div className="bg-white w-full">
-              <StudentDetail studentAddress={studentAddress as `0x${string}`} />
+              {studentAddress ? (
+                <StudentDetail studentAddress={studentAddress as `0x${string}`} />
+              ) : (
+                <p className="text-center">No student address provided</p>
+              )}
             </div>
           </div>
         </div>
@@ -114,7 +122,11 @@ export default function AdminPage() {
           {/* curriculum */}
           <div className="flex justify-center space-x-10">
             <div className="flex flex-grow w-full mt-4">
-              <SelectCohort currentCohort={currentCohort as string} setCurriculum={setCurriculum} />
+              <SelectCohort
+                setCohortDetails={setCohortDetails}
+                currentCohort={currentCohort as string}
+                setCurriculum={setCurriculum}
+              />
             </div>
             <Link
               role="button"
@@ -136,7 +148,15 @@ const StudentInput = ({ setStudentAddress }: { setStudentAddress: Dispatch<any> 
   const [address, setAddress] = useState("");
 
   return (
-    <div className="rounded-md p-4 block bg-white shadow-sm">
+    <form
+      className="rounded-md p-4 block bg-white shadow-sm"
+      onSubmit={e => {
+        e.preventDefault();
+        if (address.length === 42 && address.startsWith("0x")) {
+          setStudentAddress(address);
+        }
+      }}
+    >
       <label htmlFor="studentAddress" className="text-base">
         {"Student's address"}
       </label>
@@ -146,12 +166,10 @@ const StudentInput = ({ setStudentAddress }: { setStudentAddress: Dispatch<any> 
         type="text"
         onChange={e => {
           setAddress(e.target.value);
-          if (address.length === 42 && address.startsWith("0x")) {
-            setStudentAddress(address);
-          }
         }}
       />
-    </div>
+      <button type="submit" hidden></button>
+    </form>
   );
 };
 
@@ -161,9 +179,9 @@ const SelectCohort = ({
   setCurriculum,
 }: {
   currentCohort: string;
-  setCohortDetails?: Dispatch<any>;
+  setCohortDetails: Dispatch<any>;
 
-  setCurriculum?: Dispatch<any>;
+  setCurriculum: Dispatch<any>;
 }) => {
   const [cohort, setCohort] = useState<string>(convertCohortToId(currentCohort));
   const { data: cohortList } = useScaffoldReadContract({
@@ -181,8 +199,8 @@ const SelectCohort = ({
     functionName: "getCurriculumn",
     args: [cohort],
   });
-  setCohortDetails && setCohortDetails(cohortDetails);
-  setCurriculum && setCurriculum(curriculum);
+  setCohortDetails(cohortDetails);
+  setCurriculum(curriculum);
 
   return (
     <div className="dropdown w-full max-w-72">
