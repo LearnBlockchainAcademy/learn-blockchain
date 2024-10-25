@@ -11,7 +11,6 @@ import { notification } from "~~/utils/scaffold-eth";
 const Register: NextPage = () => {
   const { writeContractAsync } = useScaffoldWriteContract("CohortForm");
   const [submitting, setSubmitting] = useState(false);
-  // const whatsApp = "https://chat.whatsapp.com/KqS0LuCSzw9JgYTILB2D6I";
   const { data: currentCohort } = useScaffoldReadContract({
     contractName: "CohortForm",
     functionName: "currentCohort",

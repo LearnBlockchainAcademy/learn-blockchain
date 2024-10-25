@@ -24,14 +24,15 @@ export default function AdminPage() {
     contractName: "CohortForm",
     functionName: "currentCohort",
   });
-  const cort = convertCohortToId(currentCohort as string);
-  const { data: students } = useScaffoldReadContract({
-    contractName: "CohortForm",
-    functionName: "getStudentsByCohort",
-    args: [cort],
-  });
+  // const cort = convertCohortToId(currentCohort as string);
+  // const { data: students } = useScaffoldReadContract({
+  //   contractName: "CohortForm",
+  //   functionName: "getStudentsByCohort",
+  //   args: [cort],
+  // });
   const [cohortDetails, setCohortDetails] = useState<cohortDetails | null>(null);
-  const [studentDetails, setStudentDetails] = useState<`0x${string}`[] | undefined>(students as `0x${string}`[]);
+  // const [studentDetails, setStudentDetails] = useState<`0x${string}`[] | undefined>(students as `0x${string}`[]);
+  const [studentAddress, setStudentAddress] = useState<string>("");
   const [editing, setEditing] = useState(false);
   const [curriculum, setCurriculum] = useState<
     | {
@@ -102,23 +103,11 @@ export default function AdminPage() {
             <h3 className="m-2 p-2">Students</h3>
             {/* Select cohort */}
             <div className="">
-              <SelectCohort currentCohort={currentCohort as string} setStudents={setStudentDetails} />
+              <StudentInput setStudentAddress={setStudentAddress} />
             </div>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Github</th>
-                  <th>Linkedin</th>
-                </tr>
-              </thead>
-              <tbody>
-                {studentDetails?.map((detail, index) => (
-                  <StudentDetail detail={detail} index={index} key={index} />
-                ))}
-              </tbody>
-            </table>
+            <div className="bg-white w-full">
+              <StudentDetail studentAddress={studentAddress as `0x${string}`} />
+            </div>
           </div>
         </div>
         <div className="w-full flex-col mt-2 flex justify-center bg-white min-h-40">
@@ -143,15 +132,37 @@ export default function AdminPage() {
   );
 }
 
+const StudentInput = ({ setStudentAddress }: { setStudentAddress: Dispatch<any> }) => {
+  const [address, setAddress] = useState("");
+
+  return (
+    <div className="rounded-md p-4 block bg-white shadow-sm">
+      <label htmlFor="studentAddress" className="text-base">
+        {"Student's address"}
+      </label>
+      <Input
+        name="studentAddress"
+        value={address}
+        type="text"
+        onChange={e => {
+          setAddress(e.target.value);
+          if (address.length === 42 && address.startsWith("0x")) {
+            setStudentAddress(address);
+          }
+        }}
+      />
+    </div>
+  );
+};
+
 const SelectCohort = ({
   currentCohort,
   setCohortDetails,
-  setStudents,
   setCurriculum,
 }: {
   currentCohort: string;
   setCohortDetails?: Dispatch<any>;
-  setStudents?: Dispatch<any>;
+
   setCurriculum?: Dispatch<any>;
 }) => {
   const [cohort, setCohort] = useState<string>(convertCohortToId(currentCohort));
@@ -165,19 +176,12 @@ const SelectCohort = ({
     args: [cohort],
   });
 
-  const { data: studentDetails } = useScaffoldReadContract({
-    contractName: "CohortForm",
-    functionName: "getStudentsByCohort",
-    args: [cohort],
-  });
-
   const { data: curriculum } = useScaffoldReadContract({
     contractName: "CohortForm",
     functionName: "getCurriculumn",
     args: [cohort],
   });
   setCohortDetails && setCohortDetails(cohortDetails);
-  setStudents && setStudents(studentDetails);
   setCurriculum && setCurriculum(curriculum);
 
   return (
@@ -216,9 +220,9 @@ const SelectCohort = ({
 const CohortDetails = ({ details }: { details: cohortDetails | null }) => {
   return details ? (
     <div className="block min-h-40 p-4">
-      <div className="flex justify-between p-4">
-        <p>{details.name}</p>
-        <span>{details.cohortNumber.toLocaleString()}</span>
+      <div className="flex justify-start space-x-3 p-4">
+        <p className="m-1">{details.name}</p>
+        <span className="m-1">{details.cohortNumber.toLocaleString()}</span>
       </div>
       <p>Number of members: {details.numberOfMembers.toLocaleString()}</p>
       <div className="mt-4 flex justify-start space-x-3">
@@ -235,30 +239,33 @@ const CohortDetails = ({ details }: { details: cohortDetails | null }) => {
   );
 };
 
-const StudentDetail = ({ index, detail }: { index: number; detail: `0x${string}` }) => {
+const StudentDetail = ({ studentAddress }: { studentAddress: `0x${string}` }) => {
   const { data: details } = useScaffoldReadContract({
     contractName: "CohortForm",
     functionName: "getStudentDetail",
-    args: [detail],
+    args: [studentAddress],
   });
   return (
     <div>
       {details ? (
-        <tr className="hover">
-          <td>{index}</td>
-          <td>{details.name}</td>
-          <td>{details.email}</td>
-          <td>
+        <div>
+          <div className="">{details.name}</div>
+          <div className="">{details.email}</div>
+          <div className="block">
+            <h4>Bio</h4>
+            <p>{details.blockchainExperience}</p>
+          </div>
+          <div>
             <Link role="button" href={details.github} className="p-2 m-1 flex space-x-3">
-              <FaGithub size={20} />
+              <FaGithub size={5} />
             </Link>
-          </td>
-          <td>
+          </div>
+          <div className="">
             <Link role="button" href={details.linkedin} className="p-2 m-1 flex space-x-3">
-              <FaLinkedinIn size={20} />
+              <FaLinkedinIn size={5} />
             </Link>
-          </td>
-        </tr>
+          </div>
+        </div>
       ) : (
         "No student details"
       )}
