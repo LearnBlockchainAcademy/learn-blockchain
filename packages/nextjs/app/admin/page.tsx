@@ -267,19 +267,17 @@ const StudentDetail = ({ studentAddress }: { studentAddress: `0x${string}` }) =>
     <div>
       {details ? (
         <div>
-          <div className="">{details.name}</div>
-          <div className="">{details.email}</div>
-          <div className="block">
-            <h4>Bio</h4>
-            <p>{details.blockchainExperience}</p>
+          <div className="m-2 p-2">{details.name}</div>
+          <div className="m-2 p-2">{details.email}</div>
+          <div className="block m-2 p-2">
+            <h4 className="font-semibold">Bio:</h4>
+            <p className="leading">{details.blockchainExperience}</p>
           </div>
-          <div>
-            <Link role="button" href={details.github} className="p-2 m-1 flex space-x-3">
+          <div className="flex justify-start space-x-2 m-2 p-2">
+            <Link role="button" href={details.github} className="p-2">
               <FaGithub size={5} />
             </Link>
-          </div>
-          <div className="">
-            <Link role="button" href={details.linkedin} className="p-2 m-1 flex space-x-3">
+            <Link role="button" href={details.linkedin} className="p-2">
               <FaLinkedinIn size={5} />
             </Link>
           </div>
